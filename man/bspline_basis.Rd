@@ -3,22 +3,27 @@
 \name{bspline_basis}
 \alias{bspline_basis}
 \alias{my_bspline}
-\title{Evaluate a B-spline basis function}
+\title{Evaluate single B-spline basis function using Cox-de Boor recursion}
 \usage{
-my_bspline(x0, y0)
+bspline_basis(x, i, order, knots)
+
+my_bspline(x, y)
 }
 \arguments{
-\item{x}{A numeric value where the B-spline is evaluated.}
+\item{x}{A numeric value where the b-spline is evaluated.}
 
 \item{i}{The index of the basis function.}
 
 \item{order}{The order of the B-spline.}
 
-\item{knots}{A numeric vector of knots for the B-spline.}
+\item{knots}{A numeric vector of knots for the b-spline.}
 }
 \value{
-A numeric value representing the evaluated B-spline basis function.
+Numeric value of the basis function at x
+
+A numeric value representing the evaluated b-spline basis function used for constructing the resulted whole splines
 }
 \description{
-This function evaluates a B-spline basis function using Cox-de Boor recursion.
+This function calculates b-spline basis function using Cox-de Boor recursion.
 }
+\keyword{internal}

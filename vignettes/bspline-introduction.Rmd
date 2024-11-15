@@ -1,5 +1,5 @@
 ---
-title: "bspline-introduction"
+title: "bspline-introduction tutorial"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{bspline-introduction}
@@ -14,6 +14,90 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+
+This vignette serves as a tutorial for how to use the cubicSpline package
+
 ```{r setup}
 library(cubicSpline)
+```
+
+# Installation
+
+You can install the package using:
+
+```{r}
+install.packages("cubicSpline")
+```
+
+To use the main function 'my_bspline'
+
+```{r}
+set.seed(625) # For reproducibility
+
+# Generate sample variable x and its response y
+x <- seq(0, 10, length.out = 20)
+y <- sin(x) + 2*cos(x)
+
+my_bspline(x, y)
+```
+
+To plot the obtained spline against the original points:
+
+```{r}
+# Function for visualization
+visualize_my_bspline <- function(x, y) {
+  coef <- my_bspline(x, y)   # Get coefficients using original function
+  
+  # Params set up
+  m <- length(x)
+  order <- 4
+  internal_knots <- seq(min(x), max(x), length.out = m - order + 2)
+  knots <- c(rep(min(x), order-1), internal_knots, rep(max(x), order-1))
+
+  # Create grid for smooth plotting
+  x_grid <- seq(min(x), max(x), length.out = 200)
+
+  # Create matrix to store basis function values
+  b_grid <- matrix(0, nrow = length(x_grid), ncol = m)
+
+  # Calculate basis functions
+  for (i in 1:length(x_grid)) {
+    for (j in 1:m) {
+      b_grid[i,j] <- bspline_basis(x_grid[i], j, order-1, knots)
+    }
+  }
+
+  # Calculate weighted basis functions by multiplies each column of b_grid by the corresponding element in coef.
+  b_weighted <- b_grid * rep(coef, each = nrow(b_grid))
+  y_grid <- rowSums(b_weighted) # Calculate final sum
+
+  # Plots:
+  par(mfrow = c(3,1), mar = c(4,4,2,1))
+
+  # The plot for original basis functions
+  matplot(x_grid, 
+          b_grid, 
+          type = "l", 
+          main = "Original basis Functions",
+          xlab = "x", ylab = "Value")
+
+  # The plot for weighted basis functions
+  matplot(x_grid, 
+          b_weighted, 
+          type = "l", 
+          main = "Weighted basis Functions (after multiplying by coefficients)",
+          xlab = "x", ylab = "Value")
+
+  # The plot for final sum and data points
+  plot(x_grid, 
+       y_grid, 
+       type = "l", 
+       main = "Final b-spline (sum of weighted basis functions)",
+       xlab = "x", ylab = "Value", col = "pink")
+  points(x, y, pch = 16, col = "purple")
+  par(mfrow = c(1,1))
+}
+
+visualize_my_bspline(x,y)
 ```
