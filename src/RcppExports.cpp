@@ -10,19 +10,23 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// rcpp_hello
-List rcpp_hello();
-RcppExport SEXP _cubicSpline_rcpp_hello() {
+// bspline_basis_cpp
+double bspline_basis_cpp(double x, int i, int order, NumericVector knots);
+RcppExport SEXP _cubicSpline_bspline_basis_cpp(SEXP xSEXP, SEXP iSEXP, SEXP orderSEXP, SEXP knotsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello());
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type knots(knotsSEXP);
+    rcpp_result_gen = Rcpp::wrap(bspline_basis_cpp(x, i, order, knots));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_cubicSpline_rcpp_hello", (DL_FUNC) &_cubicSpline_rcpp_hello, 0},
+    {"_cubicSpline_bspline_basis_cpp", (DL_FUNC) &_cubicSpline_bspline_basis_cpp, 4},
     {NULL, NULL, 0}
 };
 

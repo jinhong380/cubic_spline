@@ -1,13 +1,20 @@
 Package: cubicSpline
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Cubic Spline Fitting
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Jintong Hong
+Maintainer: The package maintainer <jintong@umich.edu>
+Description: Implements B-spline curve fitting using Cox-de Boor recursion.
+    Provides tools for fitting and evaluating B-spline curves.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.13-1)
-LinkingTo: Rcpp
+Imports: Rcpp
+LinkingTo: Rcpp  (>= 1.0.7)
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr
