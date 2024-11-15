@@ -9,9 +9,10 @@ Description: Implements B-spline curve fitting using Cox-de Boor recursion.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Imports: fda
+Imports: 
 Suggests: 
     knitr,
+    fda,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
