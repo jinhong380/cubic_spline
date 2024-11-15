@@ -3,6 +3,7 @@
 # Tests are based on the fda package
 
 test_that("B-spline coefficients match fda package for Runge function", {
+  install.packages("fda")
   # Test case 1: Runge function
   x0 <- seq(-1, 1, length.out = 15)
   f <- function(x) 1/(1 + 25*x^2)
@@ -28,6 +29,7 @@ test_that("B-spline coefficients match fda package for Runge function", {
 
 
 test_that("B-spline coefficients match fda package for Random generated values", {
+  install.packages("fda")
   set.seed(625)
   x0 <- seq(-1, 1, length.out = 15)
   y0 <- rnorm(length(x0), 0, 0.1)
@@ -50,6 +52,7 @@ test_that("B-spline coefficients match fda package for Random generated values",
 })
 
 test_that("B-spline coefficients match fda package for trigonometric function", {
+  install.packages("fda")
   x0 <- seq(0, 10, length.out = 20)
   y0 <- sin(x0) + cos(x0)
   my_coef <- my_bspline(x0, y0)
