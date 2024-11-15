@@ -2,6 +2,9 @@
 
 # Tests are based on the fda package
 
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+install.packages("fda")
+
 test_that("B-spline coefficients match fda package for Runge function", {
   install.packages("fda")
   # Test case 1: Runge function

@@ -22,14 +22,6 @@ This vignette serves as a tutorial for how to use the cubicSpline package
 library(cubicSpline)
 ```
 
-# Installation
-
-You can install the package using:
-
-```{r}
-install.packages("cubicSpline")
-```
-
 To use the main function 'my_bspline'
 
 ```{r}
