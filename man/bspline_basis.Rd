@@ -5,25 +5,74 @@
 \alias{my_bspline}
 \title{Evaluate single B-spline basis function using Cox-de Boor recursion}
 \usage{
-bspline_basis(x, i, order, knots)
+bspline_basis(x, i, order = 4, knots)
 
 my_bspline(x, y)
 }
 \arguments{
-\item{x}{A numeric value where the b-spline is evaluated.}
+\item{x}{A numeric vector where the b-spline is evaluated.}
 
 \item{i}{The index of the basis function.}
 
 \item{order}{The order of the B-spline.}
 
 \item{knots}{A numeric vector of knots for the b-spline.}
+
+\item{y}{A numeric vector of the corresponding response value against x}
 }
 \value{
-Numeric value of the basis function at x
+A numeric value that represents how much this particular piece of the B-spline curve contributes at point x.
 
-A numeric value representing the evaluated b-spline basis function used for constructing the resulted whole splines
+A numeric vector of coefficients for fitting the B-spline curve. These coefficients
+  are the weights applied to each basis function to construct the final B-spline curve
+  that best fits the input data points (x, y)
 }
 \description{
 This function calculates b-spline basis function using Cox-de Boor recursion.
+}
+\examples{
+# Example 1: Simple trigonometric function
+set.seed(625) # For reproducibility
+# Generate sample variable x and its response y
+x <- seq(0, 10, length.out = 20)
+y <- sin(x) + 2*cos(x)
+# Calculate the coefficients (for weight calculation) for b-spline basis functions
+coef1 <- my_bspline(x, y)
+
+# Example 2: Fitting and prediction
+# Generate example data
+set.seed(625)
+x <- seq(0, 1, length.out = 10)
+y <- sin(2*pi*x) + rnorm(10, 0, 0.1)
+
+# Get coefficients
+coef <- my_bspline(x, y)
+
+# Predict at new points
+x_new <- seq(0, 1, length.out = 100)
+y_pred <- numeric(length(x_new))
+
+# Calculate predictions using existing basis functions
+order <- 4
+# Creates equally spaced knots between min(x) and max(x)
+internal_knots <- seq(min(x), max(x),
+                     length.out = length(x) - order + 2)
+# Adds repeated knots at boundaries to avoid poor behavior at boundaries
+knots <- c(rep(min(x), order-1), internal_knots, rep(max(x), order-1))
+
+for(i in 1:length(x_new)) {
+  y_pred[i] <- sum(coef * sapply(1:length(coef), function(j)
+    bspline_basis(x_new[i], j, order-1, knots)))
+}
+
+# Plot the results
+if (requireNamespace("graphics", quietly = TRUE)) {
+  plot(x, y, col = "blue", pch = 16)
+  lines(x_new, y_pred, col = "red")
+  legend("topright", c("Data", "B-spline fit"),
+         col = c("blue", "red"),
+         pch = c(16, NA),
+         lty = c(NA, 1))
+}
 }
 \keyword{internal}

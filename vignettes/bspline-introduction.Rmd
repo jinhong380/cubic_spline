@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 ```
 
 # Introduction
@@ -22,7 +23,7 @@ This vignette serves as a tutorial for how to use the cubicSpline package
 library(cubicSpline)
 ```
 
-To use the main function 'my_bspline'
+To use the main function 'my_bspline' to generate the bspline coefficients
 
 ```{r}
 set.seed(625) # For reproducibility
@@ -34,7 +35,7 @@ y <- sin(x) + 2*cos(x)
 my_bspline(x, y)
 ```
 
-To plot the obtained spline against the original points:
+To plot the obtained spline against the original points using both 'my_bspline' and 'bspline_basis':
 
 ```{r}
 # Function for visualization
@@ -93,3 +94,121 @@ visualize_my_bspline <- function(x, y) {
 
 visualize_my_bspline(x,y)
 ```
+
+# Compare against fda package
+
+## The accuracy comparison
+
+```{r}
+# Install and load package
+install.packages("fda")
+library(fda)
+
+# B-spline coefficients match fda package for cos function
+x <- seq(-1, 1, length.out = 15)
+y <- cos(x)
+my_coef <- my_bspline(x, y)
+
+# Obtain the coefficients result from fda package
+degree <- 3
+n_basis <- length(x)
+basis <- create.bspline.basis(
+  rangeval = c(min(x), max(x)),
+  nbasis = n_basis,
+  norder = degree + 1
+)
+basis_matrix <- eval.basis(x, basis)
+fit_fda <- lm(y ~ basis_matrix - 1)
+fda_coef <- as.numeric(fit_fda$coefficients) #Transform coefficients to include just the value
+
+all.equal(my_coef, fda_coef) # Test equality of coefficients
+
+```
+
+## The efficiency comparison
+
+Benchmarking:
+
+```{r}
+install.packages("microbenchmark")
+install.packages("dplyr")
+install.packages("ggplot2")
+
+library(microbenchmark)
+library(dplyr)
+library(ggplot2)
+
+
+# Create separate functions of the fda methods for easier benchmarking
+fda_spline <- function() {
+  degree <- 3
+  n_basis <- length(x)
+  basis <- create.bspline.basis(
+    rangeval = c(min(x), max(x)),
+    nbasis = n_basis,
+    norder = degree + 1
+  )
+  basis_matrix <- eval.basis(x, basis)
+  fit_fda <- lm(y ~ basis_matrix - 1)
+  fda_coef <- as.numeric(fit_fda$coefficients)
+  return(fda_coef)
+}
+
+# Run the benchmark
+benchmark_results <- microbenchmark(my_spline = my_bspline(x, y), fda_spline = fda_spline(),times = 100)
+
+# Print the benmark results
+print(benchmark_results)
+```
+
+Visualization of benchmark result: 
+
+```{r}
+
+# Convert to data frame and adjust time to be in milliseconds
+results <- as.data.frame(benchmark_results) %>% mutate(time_ms = time / 1e6) 
+
+# Create the plot
+ggplot(results, aes(x = time_ms, y = expr)) +
+  geom_jitter(aes(color = expr), height = 0.2, alpha = 0.5) +
+  scale_x_log10(
+    breaks = c(0.01, 0.1, 1, 10, 100),
+    labels = c("10µs", "100µs", "1ms", "10ms", "100ms")
+  ) +
+  labs(
+    x = "time",
+    y = "expression",
+    color = "method"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position = "right"
+  )
+```
+
+
+
+```{r}
+# Generate example data
+set.seed(625)
+x <- seq(0, 1, length.out = 10)
+y <- sin(2*pi*x) + rnorm(10, 0, 0.1)
+
+# Get coefficients
+coef <- my_bspline(x, y)
+
+# Predict at new points
+x_new <- seq(0, 1, length.out = 100)
+y_pred <- numeric(length(x_new))
+
+# Calculate predictions using existing basis functions
+order <- 4
+internal_knots <- seq(min(x), max(x), length.out = length(x) - order + 2)
+knots <- c(rep(min(x), order-1), internal_knots, rep(max(x), order-1))
+for(i in 1:length(x_new)) {
+  y_pred[i] <- sum(coef * sapply(1:length(coef), function(j) 
+    bspline_basis(x_new[i], j, order-1, knots)))
+}
+```
+

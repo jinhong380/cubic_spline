@@ -7,7 +7,6 @@ install.packages("fda")
 
 test_that("B-spline coefficients match fda package for Runge function", {
   install.packages("fda")
-  # Test case 1: Runge function
   x0 <- seq(-1, 1, length.out = 15)
   f <- function(x) 1/(1 + 25*x^2)
   y0 <- f(x0)
