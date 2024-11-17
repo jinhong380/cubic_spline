@@ -13,7 +13,7 @@ The goal of cubicSpline is to implement the b-spline with the Cox-de Boor recurs
 You can install the cubicSpline package from [GitHub](https://github.com/) with:
 
 ``` r
-devtools::install_github("jinhong380/cubic_spline")
+devtools::install_github("jinhong380/cubic_spline") #, build_vignettes = T) add this part to include vignettes
 ```
 
 ## Example
