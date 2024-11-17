@@ -2,3 +2,7 @@
 
 export(bspline_basis)
 export(my_bspline)
+importFrom(graphics,legend)
+importFrom(graphics,lines)
+importFrom(graphics,plot)
+importFrom(stats,rnorm)

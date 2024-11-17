@@ -28,7 +28,6 @@ y <- sin(x) + 2*cos(x)
 # Calculate the coefficients (for weight calculation) for b-spline basis functions
 coef1 <- my_bspline(x, y)
 
-\dontrun{
 # Example 2: Fitting and prediction
 # Generate example data
 set.seed(625)
@@ -37,7 +36,7 @@ y <- sin(2*pi*x) + rnorm(10, 0, 0.1)
 
 # Calculate and print the coefficients
 coef <- my_bspline(x, y)
-cat("B-spline coefficients: ", round(coef1, 4))
+cat("B-spline coefficients: ", round(coef, 4))
 
 # Predict at new points
 x_new <- seq(0, 1, length.out = 100)
@@ -63,5 +62,4 @@ legend("topright", c("Data", "B-spline fit"),
        col = c("blue", "red"),
        pch = c(16, NA),
        lty = c(NA, 1))
-}
 }
