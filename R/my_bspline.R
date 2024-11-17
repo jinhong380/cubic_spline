@@ -1,28 +1,3 @@
-#' Evaluate single B-spline basis function using Cox-de Boor recursion
-#'
-#' @param x Numeric vector at which to evaluate the basis function
-#' @param i Integer index of the basis function
-#' @param order Integer order of the B-spline, default 4
-#' @param knots Numeric vector of knot positions
-#' @return bspline_basis returns A numeric value that represents how much this particular piece of the B-spline curve contributes at point x.
-#' @keywords internal
-#'
-bspline_basis <- function(x, i, order = 4, knots) {
-  if (order == 0) {
-    # For order 0, return indicator function
-    return(ifelse(x >= knots[i] & x < knots[i + 1], 1, 0))
-  }
-  # Handle division by zero cases
-  coef1 <- ifelse(knots[i + order] == knots[i], 0, (x - knots[i]) / (knots[i + order] - knots[i]))
-  coef2 <- ifelse(knots[i + order + 1] == knots[i + 1], 0, (knots[i + order + 1] - x) / (knots[i + order + 1] - knots[i + 1]))
-  # Recursive calculation
-  term1 <- coef1 * bspline_basis(x, i, order - 1, knots)
-  term2 <- coef2 * bspline_basis(x, i + 1, order - 1, knots)
-  return(term1 + term2)
-}
-
-
-
 #' Fit B-spline curves using Cox-de Boor recursion
 #'
 #' This function calculates b-spline basis function using Cox-de Boor recursion.
