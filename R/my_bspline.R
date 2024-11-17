@@ -41,8 +41,9 @@ bspline_basis <- function(x, i, order = 4, knots) {
 #' x <- seq(0, 1, length.out = 10)
 #' y <- sin(2*pi*x) + rnorm(10, 0, 0.1)
 #'
-#' # Get coefficients
+#' # Calculate and print the coefficients
 #' coef <- my_bspline(x, y)
+#' cat("B-spline coefficients: ", round(coef1, 4))
 #'
 #' # Predict at new points
 #' x_new <- seq(0, 1, length.out = 100)

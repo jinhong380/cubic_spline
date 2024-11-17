@@ -21,9 +21,9 @@ my_bspline(x, y)
 \item{y}{A numeric vector of the corresponding response value against x}
 }
 \value{
-A numeric value that represents how much this particular piece of the B-spline curve contributes at point x.
+bspline_basis returns A numeric value that represents how much this particular piece of the B-spline curve contributes at point x.
 
-A numeric vector of coefficients for fitting the B-spline curve. These coefficients
+my_bspline returns a numeric vector of coefficients for fitting the B-spline curve. These coefficients
   are the weights applied to each basis function to construct the final B-spline curve
   that best fits the input data points (x, y)
 }
@@ -45,7 +45,7 @@ set.seed(625)
 x <- seq(0, 1, length.out = 10)
 y <- sin(2*pi*x) + rnorm(10, 0, 0.1)
 
-# Get coefficients
+# Calculate and print the coefficients
 coef <- my_bspline(x, y)
 
 # Predict at new points
